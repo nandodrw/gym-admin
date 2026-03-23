@@ -164,13 +164,13 @@ export async function registerEntrance(dni: string) {
   
   if (!client || client.active_subscription_id == null) {
     db.close();
-    return { success: false, message: 'Client not found or no active subscription' };
+    return { success: false, message: 'Cliente no encontrado o sin suscripción activa' };
   }
 
   const sub = await req(t.objectStore('subscriptions').get(client.active_subscription_id)) as any;
   if (!sub) {
     db.close();
-    return { success: false, message: 'Client not found or no active subscription' };
+    return { success: false, message: 'Cliente no encontrado o sin suscripción activa' };
   }
 
   const now = new Date();
@@ -179,7 +179,7 @@ export async function registerEntrance(dni: string) {
 
   if (now < subStart || now > subEnd) {
     db.close();
-    return { success: false, message: 'Subscription expired or not yet active' };
+    return { success: false, message: 'Suscripción vencida o aún no activa' };
   }
 
   let monthsDiff = (now.getFullYear() - subStart.getFullYear()) * 12 + (now.getMonth() - subStart.getMonth());
@@ -200,9 +200,9 @@ export async function registerEntrance(dni: string) {
   db.close();
 
   if (paymentsCount > currentPeriod) {
-    const warning = paidAmount < pactedAmount ? ` (Warning: paid $${paidAmount} of $${pactedAmount})` : '';
+    const warning = paidAmount < pactedAmount ? ` (Atención: pagó $${paidAmount} de $${pactedAmount})` : '';
     return { success: true, name: client.name, warning };
   } else {
-    return { success: false, message: 'Missing payment' };
+    return { success: false, message: 'Pago pendiente' };
   }
 }
